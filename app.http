@@ -1,0 +1,18 @@
+GET http://localhost:3000/players/ 
+
+###
+/// POST API
+POST http://localhost:3000/players/1/
+
+###
+//GET player by ID 
+
+GET http://localhost:3000/players/:playerId/
+
+###
+
+POST http://localhost:3000/players/:playerId/
+
+###
+
+DELETE http://localhost:3000/players/:playerId/
