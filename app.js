@@ -16,7 +16,7 @@ const initializeDBAndServer = async () => {
       driver: sqlite3.Database,
     });
     app.listen(3000, () => {
-      console.log("Server Running at http://localhost:3000/");
+      console.log("Server Running at http://localhost:3000/players/");
     });
   } catch (e) {
     console.log(`DB Error: ${e.message}`);
@@ -25,7 +25,8 @@ const initializeDBAndServer = async () => {
 };
 
 initializeDBAndServer();
-//get players
+
+//get players API
 
 const convertDbObjectToResponseObject = (dbObject) => {
   return {
@@ -46,7 +47,7 @@ app.get("/players/", async (request, response) => {
   );
 });
 
-//post
+//post player API
 
 app.post("/players/", async (request, response) => {
   const playerDetails = request.body;
@@ -58,7 +59,38 @@ app.post("/players/", async (request, response) => {
 
   const dbResponse = await db.run(addPlayer);
   const playerId = dbResponse.lastID;
-  response.send({ player_id: player_id });
+  response.send({ playerId: playerId });
+});
+
+//GET player by ID
+
+app.get("/players/:playerId/", async (request, response) => {
+  const playerByIds = `SELECT * FROM cricket_team;`;
+  const playersId = db.all(playerByIds);
+  response.send(playersId);
+});
+
+//PUT player
+
+app.put("/players/:playerId/", async (request, response) => {
+  const { player_Id } = request.params;
+  const playerDetails = request.body;
+  const { player_id, player_name, jersey_number, role } = playerDetails;
+
+  const updatePlayer = `UPDATE players SET player_name = '${Maneesh}',jersey_number = '${54}', role = '${
+    All - rounder
+  }
+    WHERE player_id = ${player_Id};`;
+  await db.run(updatePlayer);
+  response.send("Successfully updated");
+});
+
+app.delete("/players/:playerId/", async (request, response) => {
+  const { player_id } = request.params;
+
+  const deletePlayer = `DELETE FROM cricketTeam WHERE player_id = ${player_id};`;
+  await db.run(deletePlayer);
+  response.send("Player Removed");
 });
 
 module.exports = app;
